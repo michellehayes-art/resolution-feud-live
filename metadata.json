@@ -1,0 +1,6 @@
+{
+  "name": "Resolution Feud",
+  "description": "The conflict-resolution game show where couples and friends buzz in, solve real-world disputes, and discover the top survey answers for healthy communication.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
