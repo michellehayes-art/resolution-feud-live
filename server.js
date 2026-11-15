@@ -8,14 +8,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  httpOptions: {
-    headers: {
-      "User-Agent": "aistudio-build"
-    }
+let aiClient = null;
+function getAI() {
+  if (!aiClient) {
+    aiClient = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY || "",
+      httpOptions: {
+        headers: {
+          "User-Agent": "aistudio-build"
+        }
+      }
+    });
   }
-});
+  return aiClient;
+}
 app.post("/api/generate-feud-question", async (req, res) => {
   try {
     const { topic, context } = req.body;
@@ -31,7 +37,7 @@ Rules:
 4. Each answer should be a punchy, actionable solution (e.g. "Take a 20-minute cooling timeout", "Use 'I feel' statements without blame", "Flip a coin or split the difference").
 5. Include 3-5 alternative keywords/synonyms for each answer so matching is forgiving.
 6. Provide a short, witty, and compassionate "Counselor Debrief" explaining why the top answers work.`;
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: "gemini-3.8-flash",
       contents: prompt,
       config: {
@@ -96,7 +102,7 @@ Rules:
 - Accept close synonyms, paraphrases, and matching core intents (e.g. "Say sorry" matches "Apologize sincerely"; "Take a walk to calm down" matches "Take a 20-minute cooling timeout").
 - Reject answers that are completely distinct or contradict the solution.
 - Only return a match if you are reasonably confident (>= 75% semantic match).`;
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: "gemini-3.8-flash",
       contents: prompt,
       config: {
@@ -125,11 +131,21 @@ Rules:
 import fs from "fs";
 const isProduction = process.env.NODE_ENV === "production";
 const PORT = process.env.PORT || 3e3;
+app.get("/.well-known/assetlinks.json", (_req, res) => {
+  const prodPath = path.join(__dirname, "dist", ".well-known", "assetlinks.json");
+  const publicPath = path.join(__dirname, "public", ".well-known", "assetlinks.json");
+  const filePath = fs.existsSync(prodPath) ? prodPath : publicPath;
+  if (fs.existsSync(filePath)) {
+    res.type("application/json").sendFile(filePath);
+  } else {
+    res.status(404).json({ error: "assetlinks.json not found" });
+  }
+});
 async function startServer() {
   const distPath = path.join(__dirname, "dist");
   const hasDist = fs.existsSync(path.join(distPath, "index.html"));
   if (isProduction && hasDist) {
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, { dotfiles: "allow" }));
     app.get("*", (_req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });

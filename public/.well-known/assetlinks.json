@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.netlify.loquacious_cajeta_d74da1.twa",
+      "sha256_cert_fingerprints": [
+        "1D:39:0B:0B:25:79:61:80:E1:33:93:DA:89:24:FD:04:22:04:27:1F:C8:09:84:93:61:45:10:9F:94:48:23:6E"
+      ]
+    }
+  }
+]

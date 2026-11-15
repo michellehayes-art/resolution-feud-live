@@ -151,12 +151,24 @@ import fs from 'fs';
 const isProduction = process.env.NODE_ENV === 'production';
 const PORT = process.env.PORT || 3000;
 
+// Serve Digital Asset Links explicitly for TWA fullscreen verification
+app.get('/.well-known/assetlinks.json', (_req, res) => {
+  const prodPath = path.join(__dirname, 'dist', '.well-known', 'assetlinks.json');
+  const publicPath = path.join(__dirname, 'public', '.well-known', 'assetlinks.json');
+  const filePath = fs.existsSync(prodPath) ? prodPath : publicPath;
+  if (fs.existsSync(filePath)) {
+    res.type('application/json').sendFile(filePath);
+  } else {
+    res.status(404).json({ error: 'assetlinks.json not found' });
+  }
+});
+
 async function startServer() {
   const distPath = path.join(__dirname, 'dist');
   const hasDist = fs.existsSync(path.join(distPath, 'index.html'));
 
   if (isProduction && hasDist) {
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, { dotfiles: 'allow' }));
     app.get('*', (_req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
