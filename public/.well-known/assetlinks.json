@@ -9,4 +9,22 @@
       ]
     }
   }
+]JSON
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.netlify.loquacious_cajeta_d74da1.twa",
+      "sha256_cert_fingerprints": [
+        "1D:39:0B:0B:25:79:61:80:E1:33:93:DA:89:24:FD:04:22:04:27:1F:C8:09:84:93:61:45:10:9F:94:48:23:6E",
+        "AD:61:C9:B6:2C:C6:16:7F:6F:D4:05:9F:56:8C:B1:56:9D:30:33:FA:8E:C2:0F:D0:1F:76:DE:D7:4F:E2:5E:9A",
+        "6B:B5:66:93:F7:3D:B1:E1:15:DB:E5:06:89:76:24:C8:0C:2B:7D:B0:5C:3C:51:50:B5:54:86:5C:3F:D8:BE:9B",
+        "13:2A:87:33:E2:EB:0B:80:BA:7C:6C:F1:90:3B:0B:D0:E9:E4:33:A0:A5:8F:CA:E2:44:DF:72:FB:DC:35:7B:FF"
+      ]
+    }
+  }
 ]
